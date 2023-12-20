@@ -70,9 +70,9 @@
         <version.jakarta.mvc>2.1.0</version.jakarta.mvc>
         <version.org.apache.maven.plugins.maven-assembly-plugin>3.2.0</version.org.apache.maven.plugins.maven-assembly-plugin>
         <version.org.eclipse.krazo>3.0.1</version.org.eclipse.krazo>
-        <version.org.wildfly>30.0.1.Final</version.org.wildfly>
+        <version.org.wildfly>31.0.0.Beta1</version.org.wildfly>
         <version.org.wildfly.common>1.6.0.Final</version.org.wildfly.common>
-        <version.org.wildfly.core>22.0.2.Final</version.org.wildfly.core>
+        <version.org.wildfly.core>23.0.0.Beta4</version.org.wildfly.core>
 
         <!-- Test dependency versions -->
         <version.junit.junit>4.13.2</version.junit.junit>
