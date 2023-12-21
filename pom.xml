@@ -61,7 +61,7 @@
         <galleon.offline>false</galleon.offline>
 
         <!-- Plugin dependency versions -->
-        <version.org.wildfly.galleon-plugins>6.5.3.Final</version.org.wildfly.galleon-plugins>
+        <version.org.wildfly.galleon-plugins>6.5.5.Final-SNAPSHOT</version.org.wildfly.galleon-plugins>
         <version.org.wildfly.licenses.plugin>2.4.0.Final</version.org.wildfly.licenses.plugin>
         <version.org.wildfly.plugins.wildfly-jar-maven-plugin>8.1.0.Final</version.org.wildfly.plugins.wildfly-jar-maven-plugin>
         <version.org.wildfly.plugins.wildfly-maven-plugin>4.2.1.Final</version.org.wildfly.plugins.wildfly-maven-plugin>
@@ -137,6 +137,18 @@
             <dependency>
                 <groupId>org.wildfly.core</groupId>
                 <artifactId>wildfly-server</artifactId>
+                <version>${version.org.wildfly.core}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.wildfly.core</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.wildfly.core</groupId>
+                <artifactId>wildfly-version</artifactId>
                 <version>${version.org.wildfly.core}</version>
                 <exclusions>
                     <exclusion>

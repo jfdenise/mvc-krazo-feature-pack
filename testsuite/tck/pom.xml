@@ -33,9 +33,8 @@
         <surefire.jpda.args>-agentlib:jdwp=transport=dt_socket,address=*:${as.debug.port},server=y,suspend=y</surefire.jpda.args>
         <as.debug.port>8787</as.debug.port>
         <surefire.system.args>${surefire.memory.args}</surefire.system.args>
-        <jboss.home>${project.build.directory}/wildfly</jboss.home>
         <server.jvm.args>${surefire.memory.args}</server.jvm.args>
-
+        <server.jboss.args>--stability=preview</server.jboss.args>
         <!-- Feature pack to use to provision mvc-krazo -->
         <krazo.feature.pack.groupId>${project.groupId}</krazo.feature.pack.groupId>
         <krazo.feature.pack.artifactId>wildfly-mvc-krazo-feature-pack</krazo.feature.pack.artifactId>
@@ -124,10 +123,11 @@
                     <galleon-options>
                         <jboss-fork-embedded>${galleon.fork.embedded}</jboss-fork-embedded>
                         <optional-packages>passive+</optional-packages>
+                        <jboss-stability-level>preview</jboss-stability-level>
                     </galleon-options>
-                    <provisioning-dir>${project.build.directory}/wildfly</provisioning-dir>
                 </configuration>
                 <executions>
+                    <!-- Provision with layers -->
                     <execution>
                         <id>wildfly-layers-provisioning</id>
                         <goals>
@@ -135,11 +135,48 @@
                         </goals>
                         <phase>compile</phase>
                         <configuration>
+                            <provisioning-dir>${project.build.directory}/wildfly-layers</provisioning-dir>
                             <layers>
                                 <layer>core-server</layer>
                                 <layer>jsf</layer> <!-- TCK wars need jakarta.faces.webapp.FacesServlet for some reason -->
                                 <layer>mvc-krazo</layer>
                             </layers>
+                        </configuration>
+                    </execution>
+                    <!-- Provision a full installation -->
+                    <execution>
+                        <id>wildfly-complete-provisioning</id>
+                        <goals>
+                            <goal>provision</goal>
+                        </goals>
+                        <phase>compile</phase>
+                        <configuration>
+                            <provisioning-dir>${project.build.directory}/wildfly-complete</provisioning-dir>
+                            <feature-packs>
+                                <feature-pack>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>wildfly-mvc-krazo-feature-pack</artifactId>
+                                    <version>${project.version}</version>
+                                </feature-pack>
+                            </feature-packs>
+                        </configuration>
+                    </execution>
+                    <!-- Add the mvc-krazo subsystem to the wildfly-complete dist's standalone.xml -->
+                    <execution>
+                        <id>configure-mvc-krazo-subsystem</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>execute-commands</goal>
+                        </goals>
+                        <configuration>
+                            <jboss-home>${project.build.directory}/wildfly-complete</jboss-home>
+                            <offline>true</offline>
+                            <commands>
+                                <command>embed-server --stability=preview</command>
+                                <command>/extension=org.wildfly.extension.mvc-krazo:add</command>
+                                <command>/subsystem=mvc-krazo:add</command>
+                                <command>stop-embedded-server</command>
+                            </commands>
                         </configuration>
                     </execution>
                 </executions>
@@ -154,11 +191,43 @@
                         <ee.jakarta.tck.mvc.api.BaseArchiveProvider>
                             org.wildfly.extension.mvc.krazo.tck.WildFlyArchiveProvider
                         </ee.jakarta.tck.mvc.api.BaseArchiveProvider>
-                        <jboss.home>${jboss.home}</jboss.home>
                         <server.jvm.args>${server.jvm.args}</server.jvm.args>
+                        <server.jboss.args>${server.jboss.args}</server.jboss.args>
                     </systemProperties>
                     <argLine>${surefire.system.args}</argLine>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>default-test</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>layers-tests</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <systemProperties>
+                                <jboss.home>${project.build.directory}/wildfly-layers</jboss.home>
+                            </systemProperties>
+                            <reportNameSuffix>wildfly-layers</reportNameSuffix>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>complete-dist-tests</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <systemProperties>
+                                <jboss.home>${project.build.directory}/wildfly-complete</jboss.home>
+                            </systemProperties>
+                            <reportNameSuffix>wildfly-complete</reportNameSuffix>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

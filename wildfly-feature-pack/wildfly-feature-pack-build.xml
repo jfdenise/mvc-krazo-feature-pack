@@ -12,7 +12,7 @@
                 <exclude name="docs.licenses.merge"/>
                 <include name="docs"/>
             </packages>
-            <default-configs inherit="false"/>
+            <default-configs inherit="true"/>
         </dependency>
     </dependencies>
     <default-packages>
