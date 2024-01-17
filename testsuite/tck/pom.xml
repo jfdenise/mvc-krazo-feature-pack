@@ -157,26 +157,19 @@
                                     <groupId>${project.groupId}</groupId>
                                     <artifactId>wildfly-mvc-krazo-feature-pack</artifactId>
                                     <version>${project.version}</version>
+                                    <inheritPackages>false</inheritPackages>
+                                    <inheritConfigs>false</inheritConfigs>
+                                    <includedConfigs>
+                                        <config>
+                                            <model>standalone</model>
+                                            <name>standalone.xml</name>
+                                        </config>
+                                    </includedConfigs>
                                 </feature-pack>
                             </feature-packs>
-                        </configuration>
-                    </execution>
-                    <!-- Add the mvc-krazo subsystem to the wildfly-complete dist's standalone.xml -->
-                    <execution>
-                        <id>configure-mvc-krazo-subsystem</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>execute-commands</goal>
-                        </goals>
-                        <configuration>
-                            <jboss-home>${project.build.directory}/wildfly-complete</jboss-home>
-                            <offline>true</offline>
-                            <commands>
-                                <command>embed-server --stability=preview</command>
-                                <command>/extension=org.wildfly.extension.mvc-krazo:add</command>
-                                <command>/subsystem=mvc-krazo:add</command>
-                                <command>stop-embedded-server</command>
-                            </commands>
+                            <layers>
+                                <layer>mvc-krazo</layer>
+                            </layers>
                         </configuration>
                     </execution>
                 </executions>
