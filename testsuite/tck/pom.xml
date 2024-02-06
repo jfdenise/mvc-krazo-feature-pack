@@ -123,7 +123,6 @@
                     <galleon-options>
                         <jboss-fork-embedded>${galleon.fork.embedded}</jboss-fork-embedded>
                         <optional-packages>passive+</optional-packages>
-                        <jboss-stability-level>preview</jboss-stability-level>
                     </galleon-options>
                 </configuration>
                 <executions>
@@ -135,6 +134,21 @@
                         </goals>
                         <phase>compile</phase>
                         <configuration>
+                            <feature-packs>
+                                <feature-pack>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>wildfly-mvc-krazo-feature-pack</artifactId>
+                                    <version>${project.version}</version>
+                                    <inheritPackages>false</inheritPackages>
+                                    <inheritConfigs>false</inheritConfigs>
+                                    <includedConfigs>
+                                        <config>
+                                            <model>standalone</model>
+                                            <name>standalone.xml</name>
+                                        </config>
+                                    </includedConfigs>
+                                </feature-pack>
+                            </feature-packs>
                             <provisioning-dir>${project.build.directory}/wildfly-layers</provisioning-dir>
                             <layers>
                                 <layer>core-server</layer>
